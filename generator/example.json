@@ -1,0 +1,1405 @@
+{
+  "remarks": "{{NAME}}",
+  "version": {
+    "min": "25.10.15"
+  },
+  "log": {
+    "loglevel": "warning"
+  },
+  "dns": {
+    "hosts": {
+      "{{HOST}}": [
+        "188.114.96.3",
+        "188.114.97.3"
+      ]
+    },
+    "servers": [
+      {
+        "address": "fakedns",
+        "domains": [
+          "geosite:category-ir"
+        ],
+        "skipFallback": false
+      },
+      {
+        "address": "https://8.8.8.8/dns-query",
+        "tag": "remote-dns"
+      },
+      {
+        "address": "8.8.8.8",
+        "domains": [
+          "geosite:category-ir"
+        ],
+        "expectIPs": [
+          "geoip:ir"
+        ],
+        "skipFallback": true
+      }
+    ],
+    "queryStrategy": "UseIP",
+    "tag": "dns"
+  },
+  "inbounds": [
+    {
+      "listen": "0.0.0.0",
+      "port": 10808,
+      "protocol": "socks",
+      "settings": {
+        "auth": "noauth",
+        "udp": true
+      },
+      "sniffing": {
+        "destOverride": [
+          "http",
+          "tls",
+          "fakedns"
+        ],
+        "enabled": true,
+        "routeOnly": true
+      },
+      "tag": "mixed-in"
+    },
+    {
+      "listen": "0.0.0.0",
+      "port": 10853,
+      "protocol": "dokodemo-door",
+      "settings": {
+        "address": "1.1.1.1",
+        "network": "tcp,udp",
+        "port": 53
+      },
+      "tag": "dns-in"
+    }
+  ],
+  "outbounds": [
+    {
+      "protocol": "vless",
+      "settings": {
+        "vnext": [
+          {
+            "address": "{{ADDRESS}}",
+            "port": "{{PORT}}",
+            "users": [
+              {
+                "id": "{{UUID}}",
+                "encryption": "none"
+              }
+            ]
+          }
+        ]
+      },
+      "streamSettings": {
+        "network": "ws",
+        "wsSettings": {
+          "host": "{{ADDRESS}}",
+          "path": "{{PATH}}"
+        },
+        "security": "tls",
+        "tlsSettings": {
+          "serverName": "{{SIN}}",
+          "fingerprint": "firefox",
+          "alpn": [
+            "http/1.1"
+          ],
+          "allowInsecure": false
+        },
+        "sockopt": {
+          "dialerProxy": "fragment-1"
+        }
+      },
+      "tag": "proxy-1"
+    },
+    {
+      "protocol": "freedom",
+      "settings": {
+        "fragment": {
+          "packets": "1-5",
+          "length": "1-5",
+          "interval": "2-4",
+          "maxSplit": "32-512"
+        }
+      },
+      "streamSettings": {
+        "sockopt": {
+          "domainStrategy": "UseIP",
+          "happyEyeballs": {
+            "tryDelayMs": 250,
+            "prioritizeIPv6": false,
+            "interleave": 2,
+            "maxConcurrentTry": 4
+          }
+        }
+      },
+      "tag": "fragment-1"
+    },
+    {
+      "protocol": "vless",
+      "settings": {
+        "vnext": [
+          {
+            "address": "{{ADDRESS}}",
+            "port": "{{PORT}}",
+            "users": [
+              {
+                "id": "{{UUID}}",
+                "encryption": "none"
+              }
+            ]
+          }
+        ]
+      },
+      "streamSettings": {
+        "network": "ws",
+        "wsSettings": {
+          "host": "{{ADDRESS}}",
+          "path": "{{PATH}}"
+        },
+        "security": "tls",
+        "tlsSettings": {
+          "serverName": "{{SIN}}",
+          "fingerprint": "firefox",
+          "alpn": [
+            "http/1.1"
+          ],
+          "allowInsecure": false
+        },
+        "sockopt": {
+          "dialerProxy": "fragment-2"
+        }
+      },
+      "tag": "proxy-2"
+    },
+    {
+      "protocol": "freedom",
+      "settings": {
+        "fragment": {
+          "packets": "1-5",
+          "length": "1-10",
+          "interval": "2-4",
+          "maxSplit": "32-512"
+        }
+      },
+      "streamSettings": {
+        "sockopt": {
+          "domainStrategy": "UseIP",
+          "happyEyeballs": {
+            "tryDelayMs": 250,
+            "prioritizeIPv6": false,
+            "interleave": 2,
+            "maxConcurrentTry": 4
+          }
+        }
+      },
+      "tag": "fragment-2"
+    },
+    {
+      "protocol": "vless",
+      "settings": {
+        "vnext": [
+          {
+            "address": "{{ADDRESS}}",
+            "port": "{{PORT}}",
+            "users": [
+              {
+                "id": "{{UUID}}",
+                "encryption": "none"
+              }
+            ]
+          }
+        ]
+      },
+      "streamSettings": {
+        "network": "ws",
+        "wsSettings": {
+          "host": "{{ADDRESS}}",
+          "path": "{{PATH}}"
+        },
+        "security": "tls",
+        "tlsSettings": {
+          "serverName": "{{SIN}}",
+          "fingerprint": "firefox",
+          "alpn": [
+            "http/1.1"
+          ],
+          "allowInsecure": false
+        },
+        "sockopt": {
+          "dialerProxy": "fragment-3"
+        }
+      },
+      "tag": "proxy-3"
+    },
+    {
+      "protocol": "freedom",
+      "settings": {
+        "fragment": {
+          "packets": "1-5",
+          "length": "10-20",
+          "interval": "2-4",
+          "maxSplit": "32-512"
+        }
+      },
+      "streamSettings": {
+        "sockopt": {
+          "domainStrategy": "UseIP",
+          "happyEyeballs": {
+            "tryDelayMs": 250,
+            "prioritizeIPv6": false,
+            "interleave": 2,
+            "maxConcurrentTry": 4
+          }
+        }
+      },
+      "tag": "fragment-3"
+    },
+    {
+      "protocol": "vless",
+      "settings": {
+        "vnext": [
+          {
+            "address": "{{ADDRESS}}",
+            "port": "{{PORT}}",
+            "users": [
+              {
+                "id": "{{UUID}}",
+                "encryption": "none"
+              }
+            ]
+          }
+        ]
+      },
+      "streamSettings": {
+        "network": "ws",
+        "wsSettings": {
+          "host": "{{ADDRESS}}",
+          "path": "{{PATH}}"
+        },
+        "security": "tls",
+        "tlsSettings": {
+          "serverName": "{{SIN}}",
+          "fingerprint": "firefox",
+          "alpn": [
+            "http/1.1"
+          ],
+          "allowInsecure": false
+        },
+        "sockopt": {
+          "dialerProxy": "fragment-4"
+        }
+      },
+      "tag": "proxy-4"
+    },
+    {
+      "protocol": "freedom",
+      "settings": {
+        "fragment": {
+          "packets": "1-5",
+          "length": "20-30",
+          "interval": "2-4",
+          "maxSplit": "32-512"
+        }
+      },
+      "streamSettings": {
+        "sockopt": {
+          "domainStrategy": "UseIP",
+          "happyEyeballs": {
+            "tryDelayMs": 250,
+            "prioritizeIPv6": false,
+            "interleave": 2,
+            "maxConcurrentTry": 4
+          }
+        }
+      },
+      "tag": "fragment-4"
+    },
+    {
+      "protocol": "vless",
+      "settings": {
+        "vnext": [
+          {
+            "address": "{{ADDRESS}}",
+            "port": "{{PORT}}",
+            "users": [
+              {
+                "id": "{{UUID}}",
+                "encryption": "none"
+              }
+            ]
+          }
+        ]
+      },
+      "streamSettings": {
+        "network": "ws",
+        "wsSettings": {
+          "host": "{{ADDRESS}}",
+          "path": "{{PATH}}"
+        },
+        "security": "tls",
+        "tlsSettings": {
+          "serverName": "{{SIN}}",
+          "fingerprint": "firefox",
+          "alpn": [
+            "http/1.1"
+          ],
+          "allowInsecure": false
+        },
+        "sockopt": {
+          "dialerProxy": "fragment-5"
+        }
+      },
+      "tag": "proxy-5"
+    },
+    {
+      "protocol": "freedom",
+      "settings": {
+        "fragment": {
+          "packets": "1-5",
+          "length": "30-40",
+          "interval": "2-4",
+          "maxSplit": "32-512"
+        }
+      },
+      "streamSettings": {
+        "sockopt": {
+          "domainStrategy": "UseIP",
+          "happyEyeballs": {
+            "tryDelayMs": 250,
+            "prioritizeIPv6": false,
+            "interleave": 2,
+            "maxConcurrentTry": 4
+          }
+        }
+      },
+      "tag": "fragment-5"
+    },
+    {
+      "protocol": "vless",
+      "settings": {
+        "vnext": [
+          {
+            "address": "{{ADDRESS}}",
+            "port": "{{PORT}}",
+            "users": [
+              {
+                "id": "{{UUID}}",
+                "encryption": "none"
+              }
+            ]
+          }
+        ]
+      },
+      "streamSettings": {
+        "network": "ws",
+        "wsSettings": {
+          "host": "{{ADDRESS}}",
+          "path": "{{PATH}}"
+        },
+        "security": "tls",
+        "tlsSettings": {
+          "serverName": "{{SIN}}",
+          "fingerprint": "firefox",
+          "alpn": [
+            "http/1.1"
+          ],
+          "allowInsecure": false
+        },
+        "sockopt": {
+          "dialerProxy": "fragment-6"
+        }
+      },
+      "tag": "proxy-6"
+    },
+    {
+      "protocol": "freedom",
+      "settings": {
+        "fragment": {
+          "packets": "1-5",
+          "length": "40-50",
+          "interval": "2-4",
+          "maxSplit": "32-512"
+        }
+      },
+      "streamSettings": {
+        "sockopt": {
+          "domainStrategy": "UseIP",
+          "happyEyeballs": {
+            "tryDelayMs": 250,
+            "prioritizeIPv6": false,
+            "interleave": 2,
+            "maxConcurrentTry": 4
+          }
+        }
+      },
+      "tag": "fragment-6"
+    },
+    {
+      "protocol": "vless",
+      "settings": {
+        "vnext": [
+          {
+            "address": "{{ADDRESS}}",
+            "port": "{{PORT}}",
+            "users": [
+              {
+                "id": "{{UUID}}",
+                "encryption": "none"
+              }
+            ]
+          }
+        ]
+      },
+      "streamSettings": {
+        "network": "ws",
+        "wsSettings": {
+          "host": "{{ADDRESS}}",
+          "path": "{{PATH}}"
+        },
+        "security": "tls",
+        "tlsSettings": {
+          "serverName": "{{SIN}}",
+          "fingerprint": "firefox",
+          "alpn": [
+            "http/1.1"
+          ],
+          "allowInsecure": false
+        },
+        "sockopt": {
+          "dialerProxy": "fragment-7"
+        }
+      },
+      "tag": "proxy-7"
+    },
+    {
+      "protocol": "freedom",
+      "settings": {
+        "fragment": {
+          "packets": "1-5",
+          "length": "50-60",
+          "interval": "2-4",
+          "maxSplit": "32-512"
+        }
+      },
+      "streamSettings": {
+        "sockopt": {
+          "domainStrategy": "UseIP",
+          "happyEyeballs": {
+            "tryDelayMs": 250,
+            "prioritizeIPv6": false,
+            "interleave": 2,
+            "maxConcurrentTry": 4
+          }
+        }
+      },
+      "tag": "fragment-7"
+    },
+    {
+      "protocol": "vless",
+      "settings": {
+        "vnext": [
+          {
+            "address": "{{ADDRESS}}",
+            "port": "{{PORT}}",
+            "users": [
+              {
+                "id": "{{UUID}}",
+                "encryption": "none"
+              }
+            ]
+          }
+        ]
+      },
+      "streamSettings": {
+        "network": "ws",
+        "wsSettings": {
+          "host": "{{ADDRESS}}",
+          "path": "{{PATH}}"
+        },
+        "security": "tls",
+        "tlsSettings": {
+          "serverName": "{{SIN}}",
+          "fingerprint": "firefox",
+          "alpn": [
+            "http/1.1"
+          ],
+          "allowInsecure": false
+        },
+        "sockopt": {
+          "dialerProxy": "fragment-8"
+        }
+      },
+      "tag": "proxy-8"
+    },
+    {
+      "protocol": "freedom",
+      "settings": {
+        "fragment": {
+          "packets": "1-5",
+          "length": "60-70",
+          "interval": "2-4",
+          "maxSplit": "32-512"
+        }
+      },
+      "streamSettings": {
+        "sockopt": {
+          "domainStrategy": "UseIP",
+          "happyEyeballs": {
+            "tryDelayMs": 250,
+            "prioritizeIPv6": false,
+            "interleave": 2,
+            "maxConcurrentTry": 4
+          }
+        }
+      },
+      "tag": "fragment-8"
+    },
+    {
+      "protocol": "vless",
+      "settings": {
+        "vnext": [
+          {
+            "address": "{{ADDRESS}}",
+            "port": "{{PORT}}",
+            "users": [
+              {
+                "id": "{{UUID}}",
+                "encryption": "none"
+              }
+            ]
+          }
+        ]
+      },
+      "streamSettings": {
+        "network": "ws",
+        "wsSettings": {
+          "host": "{{ADDRESS}}",
+          "path": "{{PATH}}"
+        },
+        "security": "tls",
+        "tlsSettings": {
+          "serverName": "{{SIN}}",
+          "fingerprint": "firefox",
+          "alpn": [
+            "http/1.1"
+          ],
+          "allowInsecure": false
+        },
+        "sockopt": {
+          "dialerProxy": "fragment-9"
+        }
+      },
+      "tag": "proxy-9"
+    },
+    {
+      "protocol": "freedom",
+      "settings": {
+        "fragment": {
+          "packets": "1-5",
+          "length": "70-80",
+          "interval": "2-4",
+          "maxSplit": "32-512"
+        }
+      },
+      "streamSettings": {
+        "sockopt": {
+          "domainStrategy": "UseIP",
+          "happyEyeballs": {
+            "tryDelayMs": 250,
+            "prioritizeIPv6": false,
+            "interleave": 2,
+            "maxConcurrentTry": 4
+          }
+        }
+      },
+      "tag": "fragment-9"
+    },
+    {
+      "protocol": "vless",
+      "settings": {
+        "vnext": [
+          {
+            "address": "{{ADDRESS}}",
+            "port": "{{PORT}}",
+            "users": [
+              {
+                "id": "{{UUID}}",
+                "encryption": "none"
+              }
+            ]
+          }
+        ]
+      },
+      "streamSettings": {
+        "network": "ws",
+        "wsSettings": {
+          "host": "{{ADDRESS}}",
+          "path": "{{PATH}}"
+        },
+        "security": "tls",
+        "tlsSettings": {
+          "serverName": "{{SIN}}",
+          "fingerprint": "firefox",
+          "alpn": [
+            "http/1.1"
+          ],
+          "allowInsecure": false
+        },
+        "sockopt": {
+          "dialerProxy": "fragment-10"
+        }
+      },
+      "tag": "proxy-10"
+    },
+    {
+      "protocol": "freedom",
+      "settings": {
+        "fragment": {
+          "packets": "1-5",
+          "length": "80-90",
+          "interval": "2-4",
+          "maxSplit": "32-512"
+        }
+      },
+      "streamSettings": {
+        "sockopt": {
+          "domainStrategy": "UseIP",
+          "happyEyeballs": {
+            "tryDelayMs": 250,
+            "prioritizeIPv6": false,
+            "interleave": 2,
+            "maxConcurrentTry": 4
+          }
+        }
+      },
+      "tag": "fragment-10"
+    },
+    {
+      "protocol": "vless",
+      "settings": {
+        "vnext": [
+          {
+            "address": "{{ADDRESS}}",
+            "port": "{{PORT}}",
+            "users": [
+              {
+                "id": "{{UUID}}",
+                "encryption": "none"
+              }
+            ]
+          }
+        ]
+      },
+      "streamSettings": {
+        "network": "ws",
+        "wsSettings": {
+          "host": "{{ADDRESS}}",
+          "path": "{{PATH}}"
+        },
+        "security": "tls",
+        "tlsSettings": {
+          "serverName": "{{SIN}}",
+          "fingerprint": "firefox",
+          "alpn": [
+            "http/1.1"
+          ],
+          "allowInsecure": false
+        },
+        "sockopt": {
+          "dialerProxy": "fragment-11"
+        }
+      },
+      "tag": "proxy-11"
+    },
+    {
+      "protocol": "freedom",
+      "settings": {
+        "fragment": {
+          "packets": "1-5",
+          "length": "90-100",
+          "interval": "2-4",
+          "maxSplit": "32-512"
+        }
+      },
+      "streamSettings": {
+        "sockopt": {
+          "domainStrategy": "UseIP",
+          "happyEyeballs": {
+            "tryDelayMs": 250,
+            "prioritizeIPv6": false,
+            "interleave": 2,
+            "maxConcurrentTry": 4
+          }
+        }
+      },
+      "tag": "fragment-11"
+    },
+    {
+      "protocol": "vless",
+      "settings": {
+        "vnext": [
+          {
+            "address": "{{ADDRESS}}",
+            "port": "{{PORT}}",
+            "users": [
+              {
+                "id": "{{UUID}}",
+                "encryption": "none"
+              }
+            ]
+          }
+        ]
+      },
+      "streamSettings": {
+        "network": "ws",
+        "wsSettings": {
+          "host": "{{ADDRESS}}",
+          "path": "{{PATH}}"
+        },
+        "security": "tls",
+        "tlsSettings": {
+          "serverName": "{{SIN}}",
+          "fingerprint": "firefox",
+          "alpn": [
+            "http/1.1"
+          ],
+          "allowInsecure": false
+        },
+        "sockopt": {
+          "dialerProxy": "fragment-12"
+        }
+      },
+      "tag": "proxy-12"
+    },
+    {
+      "protocol": "freedom",
+      "settings": {
+        "fragment": {
+          "packets": "1-5",
+          "length": "10-30",
+          "interval": "2-4",
+          "maxSplit": "32-512"
+        }
+      },
+      "streamSettings": {
+        "sockopt": {
+          "domainStrategy": "UseIP",
+          "happyEyeballs": {
+            "tryDelayMs": 250,
+            "prioritizeIPv6": false,
+            "interleave": 2,
+            "maxConcurrentTry": 4
+          }
+        }
+      },
+      "tag": "fragment-12"
+    },
+    {
+      "protocol": "vless",
+      "settings": {
+        "vnext": [
+          {
+            "address": "{{ADDRESS}}",
+            "port": "{{PORT}}",
+            "users": [
+              {
+                "id": "{{UUID}}",
+                "encryption": "none"
+              }
+            ]
+          }
+        ]
+      },
+      "streamSettings": {
+        "network": "ws",
+        "wsSettings": {
+          "host": "{{ADDRESS}}",
+          "path": "{{PATH}}"
+        },
+        "security": "tls",
+        "tlsSettings": {
+          "serverName": "{{SIN}}",
+          "fingerprint": "firefox",
+          "alpn": [
+            "http/1.1"
+          ],
+          "allowInsecure": false
+        },
+        "sockopt": {
+          "dialerProxy": "fragment-13"
+        }
+      },
+      "tag": "proxy-13"
+    },
+    {
+      "protocol": "freedom",
+      "settings": {
+        "fragment": {
+          "packets": "1-5",
+          "length": "20-40",
+          "interval": "2-4",
+          "maxSplit": "32-512"
+        }
+      },
+      "streamSettings": {
+        "sockopt": {
+          "domainStrategy": "UseIP",
+          "happyEyeballs": {
+            "tryDelayMs": 250,
+            "prioritizeIPv6": false,
+            "interleave": 2,
+            "maxConcurrentTry": 4
+          }
+        }
+      },
+      "tag": "fragment-13"
+    },
+    {
+      "protocol": "vless",
+      "settings": {
+        "vnext": [
+          {
+            "address": "{{ADDRESS}}",
+            "port": "{{PORT}}",
+            "users": [
+              {
+                "id": "{{UUID}}",
+                "encryption": "none"
+              }
+            ]
+          }
+        ]
+      },
+      "streamSettings": {
+        "network": "ws",
+        "wsSettings": {
+          "host": "{{ADDRESS}}",
+          "path": "{{PATH}}"
+        },
+        "security": "tls",
+        "tlsSettings": {
+          "serverName": "{{SIN}}",
+          "fingerprint": "firefox",
+          "alpn": [
+            "http/1.1"
+          ],
+          "allowInsecure": false
+        },
+        "sockopt": {
+          "dialerProxy": "fragment-14"
+        }
+      },
+      "tag": "proxy-14"
+    },
+    {
+      "protocol": "freedom",
+      "settings": {
+        "fragment": {
+          "packets": "1-5",
+          "length": "30-50",
+          "interval": "2-4",
+          "maxSplit": "32-512"
+        }
+      },
+      "streamSettings": {
+        "sockopt": {
+          "domainStrategy": "UseIP",
+          "happyEyeballs": {
+            "tryDelayMs": 250,
+            "prioritizeIPv6": false,
+            "interleave": 2,
+            "maxConcurrentTry": 4
+          }
+        }
+      },
+      "tag": "fragment-14"
+    },
+    {
+      "protocol": "vless",
+      "settings": {
+        "vnext": [
+          {
+            "address": "{{ADDRESS}}",
+            "port": "{{PORT}}",
+            "users": [
+              {
+                "id": "{{UUID}}",
+                "encryption": "none"
+              }
+            ]
+          }
+        ]
+      },
+      "streamSettings": {
+        "network": "ws",
+        "wsSettings": {
+          "host": "{{ADDRESS}}",
+          "path": "{{PATH}}"
+        },
+        "security": "tls",
+        "tlsSettings": {
+          "serverName": "{{SIN}}",
+          "fingerprint": "firefox",
+          "alpn": [
+            "http/1.1"
+          ],
+          "allowInsecure": false
+        },
+        "sockopt": {
+          "dialerProxy": "fragment-15"
+        }
+      },
+      "tag": "proxy-15"
+    },
+    {
+      "protocol": "freedom",
+      "settings": {
+        "fragment": {
+          "packets": "1-5",
+          "length": "40-60",
+          "interval": "2-4",
+          "maxSplit": "32-512"
+        }
+      },
+      "streamSettings": {
+        "sockopt": {
+          "domainStrategy": "UseIP",
+          "happyEyeballs": {
+            "tryDelayMs": 250,
+            "prioritizeIPv6": false,
+            "interleave": 2,
+            "maxConcurrentTry": 4
+          }
+        }
+      },
+      "tag": "fragment-15"
+    },
+    {
+      "protocol": "vless",
+      "settings": {
+        "vnext": [
+          {
+            "address": "{{ADDRESS}}",
+            "port": "{{PORT}}",
+            "users": [
+              {
+                "id": "{{UUID}}",
+                "encryption": "none"
+              }
+            ]
+          }
+        ]
+      },
+      "streamSettings": {
+        "network": "ws",
+        "wsSettings": {
+          "host": "{{ADDRESS}}",
+          "path": "{{PATH}}"
+        },
+        "security": "tls",
+        "tlsSettings": {
+          "serverName": "{{SIN}}",
+          "fingerprint": "firefox",
+          "alpn": [
+            "http/1.1"
+          ],
+          "allowInsecure": false
+        },
+        "sockopt": {
+          "dialerProxy": "fragment-16"
+        }
+      },
+      "tag": "proxy-16"
+    },
+    {
+      "protocol": "freedom",
+      "settings": {
+        "fragment": {
+          "packets": "1-5",
+          "length": "50-70",
+          "interval": "2-4",
+          "maxSplit": "32-512"
+        }
+      },
+      "streamSettings": {
+        "sockopt": {
+          "domainStrategy": "UseIP",
+          "happyEyeballs": {
+            "tryDelayMs": 250,
+            "prioritizeIPv6": false,
+            "interleave": 2,
+            "maxConcurrentTry": 4
+          }
+        }
+      },
+      "tag": "fragment-16"
+    },
+    {
+      "protocol": "vless",
+      "settings": {
+        "vnext": [
+          {
+            "address": "{{ADDRESS}}",
+            "port": "{{PORT}}",
+            "users": [
+              {
+                "id": "{{UUID}}",
+                "encryption": "none"
+              }
+            ]
+          }
+        ]
+      },
+      "streamSettings": {
+        "network": "ws",
+        "wsSettings": {
+          "host": "{{ADDRESS}}",
+          "path": "{{PATH}}"
+        },
+        "security": "tls",
+        "tlsSettings": {
+          "serverName": "{{SIN}}",
+          "fingerprint": "firefox",
+          "alpn": [
+            "http/1.1"
+          ],
+          "allowInsecure": false
+        },
+        "sockopt": {
+          "dialerProxy": "fragment-17"
+        }
+      },
+      "tag": "proxy-17"
+    },
+    {
+      "protocol": "freedom",
+      "settings": {
+        "fragment": {
+          "packets": "1-5",
+          "length": "60-80",
+          "interval": "2-4",
+          "maxSplit": "32-512"
+        }
+      },
+      "streamSettings": {
+        "sockopt": {
+          "domainStrategy": "UseIP",
+          "happyEyeballs": {
+            "tryDelayMs": 250,
+            "prioritizeIPv6": false,
+            "interleave": 2,
+            "maxConcurrentTry": 4
+          }
+        }
+      },
+      "tag": "fragment-17"
+    },
+    {
+      "protocol": "vless",
+      "settings": {
+        "vnext": [
+          {
+            "address": "{{ADDRESS}}",
+            "port": "{{PORT}}",
+            "users": [
+              {
+                "id": "{{UUID}}",
+                "encryption": "none"
+              }
+            ]
+          }
+        ]
+      },
+      "streamSettings": {
+        "network": "ws",
+        "wsSettings": {
+          "host": "{{ADDRESS}}",
+          "path": "{{PATH}}"
+        },
+        "security": "tls",
+        "tlsSettings": {
+          "serverName": "{{SIN}}",
+          "fingerprint": "firefox",
+          "alpn": [
+            "http/1.1"
+          ],
+          "allowInsecure": false
+        },
+        "sockopt": {
+          "dialerProxy": "fragment-18"
+        }
+      },
+      "tag": "proxy-18"
+    },
+    {
+      "protocol": "freedom",
+      "settings": {
+        "fragment": {
+          "packets": "1-5",
+          "length": "70-90",
+          "interval": "2-4",
+          "maxSplit": "32-512"
+        }
+      },
+      "streamSettings": {
+        "sockopt": {
+          "domainStrategy": "UseIP",
+          "happyEyeballs": {
+            "tryDelayMs": 250,
+            "prioritizeIPv6": false,
+            "interleave": 2,
+            "maxConcurrentTry": 4
+          }
+        }
+      },
+      "tag": "fragment-18"
+    },
+    {
+      "protocol": "vless",
+      "settings": {
+        "vnext": [
+          {
+            "address": "{{ADDRESS}}",
+            "port": "{{PORT}}",
+            "users": [
+              {
+                "id": "{{UUID}}",
+                "encryption": "none"
+              }
+            ]
+          }
+        ]
+      },
+      "streamSettings": {
+        "network": "ws",
+        "wsSettings": {
+          "host": "{{ADDRESS}}",
+          "path": "{{PATH}}"
+        },
+        "security": "tls",
+        "tlsSettings": {
+          "serverName": "{{SIN}}",
+          "fingerprint": "firefox",
+          "alpn": [
+            "http/1.1"
+          ],
+          "allowInsecure": false
+        },
+        "sockopt": {
+          "dialerProxy": "fragment-19"
+        }
+      },
+      "tag": "proxy-19"
+    },
+    {
+      "protocol": "freedom",
+      "settings": {
+        "fragment": {
+          "packets": "1-5",
+          "length": "80-100",
+          "interval": "2-4",
+          "maxSplit": "32-512"
+        }
+      },
+      "streamSettings": {
+        "sockopt": {
+          "domainStrategy": "UseIP",
+          "happyEyeballs": {
+            "tryDelayMs": 250,
+            "prioritizeIPv6": false,
+            "interleave": 2,
+            "maxConcurrentTry": 4
+          }
+        }
+      },
+      "tag": "fragment-19"
+    },
+    {
+      "protocol": "vless",
+      "settings": {
+        "vnext": [
+          {
+            "address": "{{ADDRESS}}",
+            "port": "{{PORT}}",
+            "users": [
+              {
+                "id": "{{UUID}}",
+                "encryption": "none"
+              }
+            ]
+          }
+        ]
+      },
+      "streamSettings": {
+        "network": "ws",
+        "wsSettings": {
+          "host": "{{ADDRESS}}",
+          "path": "{{PATH}}"
+        },
+        "security": "tls",
+        "tlsSettings": {
+          "serverName": "{{SIN}}",
+          "fingerprint": "firefox",
+          "alpn": [
+            "http/1.1"
+          ],
+          "allowInsecure": false
+        },
+        "sockopt": {
+          "dialerProxy": "fragment-20"
+        }
+      },
+      "tag": "proxy-20"
+    },
+    {
+      "protocol": "freedom",
+      "settings": {
+        "fragment": {
+          "packets": "1-5",
+          "length": "100-200",
+          "interval": "2-4",
+          "maxSplit": "32-512"
+        }
+      },
+      "streamSettings": {
+        "sockopt": {
+          "domainStrategy": "UseIP",
+          "happyEyeballs": {
+            "tryDelayMs": 250,
+            "prioritizeIPv6": false,
+            "interleave": 2,
+            "maxConcurrentTry": 4
+          }
+        }
+      },
+      "tag": "fragment-20"
+    },
+    {
+      "protocol": "dns",
+      "settings": {
+        "nonIPQuery": "reject"
+      },
+      "tag": "dns-out"
+    },
+    {
+      "protocol": "freedom",
+      "settings": {
+        "domainStrategy": "UseIP"
+      },
+      "tag": "direct"
+    },
+    {
+      "protocol": "blackhole",
+      "settings": {
+        "response": {
+          "type": "http"
+        }
+      },
+      "tag": "block"
+    }
+  ],
+  "routing": {
+    "domainStrategy": "IPIfNonMatch",
+    "rules": [
+      {
+        "inboundTag": [
+          "mixed-in"
+        ],
+        "port": 53,
+        "outboundTag": "dns-out",
+        "type": "field"
+      },
+      {
+        "inboundTag": [
+          "dns-in"
+        ],
+        "outboundTag": "dns-out",
+        "type": "field"
+      },
+      {
+        "inboundTag": [
+          "remote-dns"
+        ],
+        "balancerTag": "all-proxies",
+        "type": "field"
+      },
+      {
+        "inboundTag": [
+          "dns"
+        ],
+        "outboundTag": "direct",
+        "type": "field"
+      },
+      {
+        "domain": [
+          "geosite:private"
+        ],
+        "outboundTag": "direct",
+        "type": "field"
+      },
+      {
+        "ip": [
+          "geoip:private"
+        ],
+        "outboundTag": "direct",
+        "type": "field"
+      },
+      {
+        "network": "udp",
+        "outboundTag": "block",
+        "type": "field"
+      },
+      {
+        "domain": [
+          "geosite:category-ir"
+        ],
+        "outboundTag": "direct",
+        "type": "field"
+      },
+      {
+        "ip": [
+          "geoip:ir"
+        ],
+        "outboundTag": "direct",
+        "type": "field"
+      },
+      {
+        "network": "tcp",
+        "balancerTag": "all-proxies",
+        "type": "field"
+      }
+    ],
+    "balancers": [
+      {
+        "tag": "all-proxies",
+        "selector": [
+          "proxy"
+        ],
+        "strategy": {
+          "type": "leastPing"
+        }
+      }
+    ]
+  },
+  "observatory": {
+    "subjectSelector": [
+      "proxy"
+    ],
+    "probeUrl": "https://www.gstatic.com/generate_204",
+    "probeInterval": "60s",
+    "enableConcurrency": true
+  },
+  "policy": {
+    "levels": {
+      "0": {
+        "connIdle": 300,
+        "handshake": 4,
+        "uplinkOnly": 1,
+        "downlinkOnly": 1
+      }
+    },
+    "system": {
+      "statsOutboundUplink": true,
+      "statsOutboundDownlink": true
+    }
+  },
+  "stats": {}
+}
