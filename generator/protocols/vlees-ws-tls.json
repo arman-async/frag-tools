@@ -1,0 +1,37 @@
+{
+    "protocol": "vless",
+    "settings": {
+        "vnext": [
+            {
+                "address": "{{ADDRESS}}",
+                "port": "{{PORT}}",
+                "users": [
+                    {
+                        "id": "{{UUID}}",
+                        "encryption": "none"
+                    }
+                ]
+            }
+        ]
+    },
+    "streamSettings": {
+        "network": "ws",
+        "wsSettings": {
+            "host": "{{ADDRESS}}",
+            "path": "{{PATH}}"
+        },
+        "security": "tls",
+        "tlsSettings": {
+            "serverName": "{{SIN}}",
+            "fingerprint": "firefox",
+            "alpn": [
+                "http/1.1"
+            ],
+            "allowInsecure": false
+        },
+        "sockopt": {
+            "dialerProxy": "{{FRAGMENT_ATTH}}"
+        }
+    },
+    "tag": "{{TAG}}"
+}
